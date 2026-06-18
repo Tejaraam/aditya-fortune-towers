@@ -4,7 +4,6 @@ import { generateAndDownloadPdf } from '../../utils/pdf';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../common/AuthContext';
 import { Database } from '../../types/database.types';
-import Tesseract from 'tesseract.js';
 
 type TransactionRow = Database['public']['Tables']['financial_transactions']['Row'];
 
@@ -26,7 +25,6 @@ export const Accounts: React.FC = () => {
   const [newAmount, setNewAmount] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
-  const [ocrLoading, setOcrLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -95,51 +93,7 @@ export const Accounts: React.FC = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setReceiptFile(file);
-    setOcrLoading(true);
-
-    try {
-      // Run Tesseract OCR on the file
-      const { data: { text } } = await Tesseract.recognize(file, 'eng');
-      
-      // Basic OCR parsing logic
-      // Try to find a currency amount: match digits with optional decimals
-      const amountMatches = text.match(/[\d,]+\.\d{2}/g);
-      if (amountMatches && amountMatches.length > 0) {
-        // Find the largest amount (usually the total)
-        const amounts = amountMatches.map(a => parseFloat(a.replace(/,/g, '')));
-        const total = Math.max(...amounts);
-        if (total > 0 && !newAmount) setNewAmount(total.toString());
-      } else {
-        // Fallback for whole numbers that look like totals
-        const wholeMatches = text.match(/(?:total|amount|rs|inr|₹)\s*[:.-]?\s*([\d,]+)/i);
-        if (wholeMatches && wholeMatches[1] && !newAmount) {
-          setNewAmount(wholeMatches[1].replace(/,/g, ''));
-        }
-      }
-
-      // Try to find a date
-      const dateMatches = text.match(/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/);
-      if (dateMatches && dateMatches[0]) {
-        // Very basic attempt to parse date, might fail based on locale (dd/mm vs mm/dd)
-        try {
-          const parts = dateMatches[0].split(/[\/\-]/);
-          if (parts.length === 3) {
-            let year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-            let newD = new Date(`${year}-${parts[1]}-${parts[0]}`);
-            if (!isNaN(newD.getTime())) {
-              setNewDate(newD.toISOString().split('T')[0]);
-            }
-          }
-        } catch (e) { /* ignore date parse errors */ }
-      }
-
-    } catch (err) {
-      console.error('OCR Error:', err);
-    } finally {
-      setOcrLoading(false);
-    }
   };
 
   const handleSaveTransaction = async (e: React.FormEvent) => {
@@ -485,13 +439,7 @@ export const Accounts: React.FC = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                 />
                 
-                {ocrLoading ? (
-                  <div className="flex flex-col items-center gap-2 py-4">
-                    <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
-                    <span className="text-sm font-bold text-slate-700">Scanning Receipt with AI OCR...</span>
-                    <span className="text-xs text-slate-500">Extracting amount and date</span>
-                  </div>
-                ) : receiptFile ? (
+                {receiptFile ? (
                   <div className="flex flex-col items-center gap-2 py-2">
                     <FileImage className="w-8 h-8 text-emerald-500" />
                     <span className="text-sm font-bold text-slate-700">{receiptFile.name} attached</span>
@@ -508,7 +456,7 @@ export const Accounts: React.FC = () => {
                   <div className="flex flex-col items-center gap-2 py-4">
                     <UploadCloud className="w-8 h-8 text-slate-400" />
                     <span className="text-sm font-bold text-slate-700">Upload Bill / Receipt Image</span>
-                    <span className="text-xs text-slate-500">Auto-fill transaction details using Smart OCR</span>
+                    <span className="text-xs text-slate-500">Click or drag to attach receipt</span>
                   </div>
                 )}
               </div>
@@ -543,8 +491,8 @@ export const Accounts: React.FC = () => {
                 <input type="number" step="0.01" required placeholder="e.g. 25000" value={newAmount} onChange={(e) => setNewAmount(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 focus:outline-none focus:bg-white focus:border-amber-400 font-bold text-amber-900" />
               </div>
               <div className="pt-4 flex items-center justify-end gap-3">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 font-semibold text-xs text-slate-700 transition cursor-pointer" disabled={isSubmitting || ocrLoading}>Cancel</button>
-                <button type="submit" disabled={isSubmitting || ocrLoading} className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-outfit font-extrabold text-sm shadow-lg transition cursor-pointer flex items-center gap-2">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 font-semibold text-xs text-slate-700 transition cursor-pointer" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" disabled={isSubmitting} className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-outfit font-extrabold text-sm shadow-lg transition cursor-pointer flex items-center gap-2">
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   {isSubmitting ? 'Saving...' : (editingId ? 'Update Transaction' : 'Record Transaction')}
                 </button>

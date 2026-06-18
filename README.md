@@ -5,7 +5,7 @@ A modern, secure, and fully-featured digital community portal for managing resid
 ## Tech Stack
 * **Frontend:** React, Vite, TypeScript, Tailwind CSS
 * **Backend:** Supabase (Auth, Postgres DB, Storage)
-* **Features:** AI OCR Receipt Parsing (Tesseract.js), Role-Based Access Control, Real-Time Ledgers, Members Directory.
+* **Features:** Role-Based Access Control, Real-Time Ledgers, Transparent Receipt Uploads, Members Directory.
 
 ---
 
@@ -50,7 +50,7 @@ git add .
 ### Step 3: Commit your changes
 Save your staged changes with a descriptive message:
 ```bash
-git commit -m "Added OCR Receipt Scanning, Accounts Module, and Project Documentation"
+git commit -m "Finalized Accounts Module, and Project Documentation"
 ```
 
 ### Step 4: Push to your repository
