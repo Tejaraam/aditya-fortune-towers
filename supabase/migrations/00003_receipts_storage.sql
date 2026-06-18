@@ -1,7 +1,7 @@
 -- Create the storage bucket for receipts
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('receipts', 'receipts', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- Allow public read access to receipts
 CREATE POLICY "Public Receipt Access"
