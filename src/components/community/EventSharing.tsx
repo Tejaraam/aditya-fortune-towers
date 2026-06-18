@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, Clock, Sparkles, MessageSquare, Plus, CheckCircle2, User, Send, Share2, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Clock, Sparkles, MessageSquare, Plus, CheckCircle2, User, Send, Share2, Loader2, Pencil, Users } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../common/AuthContext';
 import { CreateEventModal } from '../modals/CreateEventModal';
+import { PersonalEvents } from './PersonalEvents';
 
 export const EventSharing: React.FC = () => {
   const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState<'community' | 'personal'>('community');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState<any>(null);
+  const [attendeesModalOpen, setAttendeesModalOpen] = useState(false);
+  const [selectedEventAttendees, setSelectedEventAttendees] = useState<any[]>([]);
 
   const categories = ['All', 'Celebration', 'Sports', 'Meeting', 'Workshop'];
 
@@ -133,7 +138,10 @@ export const EventSharing: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto shrink-0">
           {user && (profile?.role === 'Admin' || profile?.role === 'Committee Member') && (
             <button
-              onClick={() => setIsCreateEventModalOpen(true)}
+              onClick={() => {
+                setEventToEdit(null);
+                setIsCreateEventModalOpen(true);
+              }}
               className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-outfit font-extrabold px-6 py-4 rounded-2xl shadow-xl shadow-amber-500/20 hover:scale-105 transition cursor-pointer text-sm shrink-0"
             >
               <Plus className="w-5 h-5" />
@@ -143,8 +151,38 @@ export const EventSharing: React.FC = () => {
         </div>
       </div>
 
-      {/* Filters bar */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+      {/* Tabs for Community vs Personal Events */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-slate-200/50 p-1.5 rounded-2xl inline-flex gap-2">
+          <button
+            onClick={() => setActiveTab('community')}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              activeTab === 'community' 
+                ? 'bg-white text-indigo-700 shadow-sm' 
+                : 'text-slate-600 hover:text-indigo-600'
+            }`}
+          >
+            Community Events
+          </button>
+          <button
+            onClick={() => setActiveTab('personal')}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              activeTab === 'personal' 
+                ? 'bg-white text-indigo-700 shadow-sm' 
+                : 'text-slate-600 hover:text-indigo-600'
+            }`}
+          >
+            My Personal Reminders
+          </button>
+        </div>
+      </div>
+
+      {activeTab === 'personal' ? (
+        <PersonalEvents />
+      ) : (
+        <>
+          {/* Filters bar */}
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 font-outfit font-bold text-sm text-slate-700 pl-2">
           <Calendar className="w-4 h-4 text-amber-600" />
           <span>Filter by Event Type:</span>
@@ -288,7 +326,18 @@ export const EventSharing: React.FC = () => {
                         <span className="font-outfit font-extrabold text-slate-900 text-sm">
                           {event.event_attendees?.length || 0} Flat Owners Confirmed
                         </span>
-                        <p className="text-slate-500">RSVP to add your flat to the VIP dinner / seating arrangement.</p>
+                        <p className="text-slate-500 mb-2">RSVP to add your flat to the VIP dinner / seating arrangement.</p>
+                        {user && (profile?.role === 'Admin' || profile?.role === 'Committee Member' || user.id === event.organizer_id) && (
+                          <button 
+                            onClick={() => {
+                              setSelectedEventAttendees(event.event_attendees || []);
+                              setAttendeesModalOpen(true);
+                            }}
+                            className="flex items-center gap-1.5 text-indigo-600 hover:text-indigo-700 font-bold bg-indigo-50 px-3 py-1.5 rounded-lg transition"
+                          >
+                            <Users className="w-3.5 h-3.5" /> View Full Guest List
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -318,6 +367,19 @@ export const EventSharing: React.FC = () => {
                       >
                         <Share2 className="w-4 h-4" />
                       </button>
+
+                      {user && (profile?.role === 'Admin' || profile?.role === 'Committee Member' || user.id === event.organizer_id) && (
+                        <button
+                          onClick={() => {
+                            setEventToEdit(event);
+                            setIsCreateEventModalOpen(true);
+                          }}
+                          className="p-3 bg-white rounded-xl border border-slate-200 text-indigo-600 hover:bg-indigo-50 transition cursor-pointer"
+                          title="Edit Event"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -395,9 +457,53 @@ export const EventSharing: React.FC = () => {
       {isCreateEventModalOpen && (
         <CreateEventModal
           isOpen={isCreateEventModalOpen}
-          onClose={() => setIsCreateEventModalOpen(false)}
+          onClose={() => {
+            setIsCreateEventModalOpen(false);
+            setEventToEdit(null);
+          }}
           onEventCreated={fetchEvents}
+          eventToEdit={eventToEdit}
         />
+      )}
+
+      {/* Attendees Modal */}
+      {attendeesModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative max-h-[80vh] flex flex-col">
+            <button onClick={() => setAttendeesModalOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 text-sm font-bold bg-slate-100 p-2 rounded-full cursor-pointer">✕</button>
+            <h3 className="font-outfit font-extrabold text-2xl text-slate-900 mb-2 flex items-center gap-2">
+               <Users className="text-indigo-500 w-6 h-6" /> Guest List
+            </h3>
+            <p className="text-sm text-slate-500 mb-6">{selectedEventAttendees.length} Flat Owners Confirmed</p>
+            
+            <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+              {selectedEventAttendees.length === 0 ? (
+                <p className="text-center text-sm text-slate-400 py-8">No attendees yet.</p>
+              ) : (
+                selectedEventAttendees.map((att: any, idx: number) => {
+                  const owner = att.profiles;
+                  if (!owner) return null;
+                  return (
+                    <div key={idx} className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                      <img src={owner.avatar_url || 'https://www.gravatar.com/avatar/?d=mp'} alt={owner.name} className="w-10 h-10 rounded-full object-cover bg-slate-200" />
+                      <div>
+                        <div className="font-bold text-slate-800 text-sm">{owner.name}</div>
+                        <div className="text-xs text-indigo-600 font-semibold">Tower {owner.tower} • Flat {owner.flat_number}</div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            
+            <div className="pt-6 mt-4 border-t border-slate-100">
+              <button onClick={() => setAttendeesModalOpen(false)} className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+        </>
       )}
 
     </div>

@@ -7,15 +7,17 @@ interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEventCreated: () => void;
+  eventToEdit?: any;
 }
 
 export const CreateEventModal: React.FC<CreateEventModalProps> = ({
   isOpen,
   onClose,
   onEventCreated,
+  eventToEdit,
 }) => {
   const { user, profile } = useAuth();
-  const [mode, setMode] = useState<'ai' | 'manual'>('ai');
+  const [mode, setMode] = useState<'ai' | 'manual'>(eventToEdit ? 'manual' : 'ai');
   const [aiPrompt, setAiPrompt] = useState('');
   const [isStitching, setIsStitching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,6 +31,20 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (eventToEdit) {
+      setTitle(eventToEdit.title);
+      setCategory(eventToEdit.category);
+      setLocation(eventToEdit.location);
+      setDescription(eventToEdit.description);
+      const d = new Date(eventToEdit.event_date);
+      // Format correctly based on local time
+      setDate(d.toLocaleDateString('en-CA')); // YYYY-MM-DD
+      setTime(d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
+      setPreviewUrl(eventToEdit.image_url);
+    }
+  }, [eventToEdit]);
 
   if (!isOpen) return null;
 
@@ -133,21 +149,35 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
         finalImageUrl = publicUrl;
       }
 
-      const { error: dbError } = await supabase
-        .from('events')
-        .insert({
-          title,
-          category,
-          event_date: eventDateTime,
-          location,
-          description,
-          organizer_id: user.id,
-          image_url: finalImageUrl,
-          is_ai_stitched: aiPrompt.trim().length > 0,
-          ai_prompt: aiPrompt.trim() ? aiPrompt.trim() : null,
-        });
-
-      if (dbError) throw dbError;
+      if (eventToEdit) {
+        const { error: dbError } = await supabase
+          .from('events')
+          .update({
+            title,
+            category,
+            event_date: eventDateTime,
+            location,
+            description,
+            image_url: finalImageUrl,
+          })
+          .eq('id', eventToEdit.id);
+        if (dbError) throw dbError;
+      } else {
+        const { error: dbError } = await supabase
+          .from('events')
+          .insert({
+            title,
+            category,
+            event_date: eventDateTime,
+            location,
+            description,
+            organizer_id: user.id,
+            image_url: finalImageUrl,
+            is_ai_stitched: aiPrompt.trim().length > 0,
+            ai_prompt: aiPrompt.trim() ? aiPrompt.trim() : null,
+          });
+        if (dbError) throw dbError;
+      }
 
       onEventCreated();
       onClose();
@@ -176,8 +206,8 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
             <Calendar className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-outfit font-extrabold text-2xl text-slate-900">Share Community Event Details</h3>
-            <p className="text-xs text-slate-500">Broadcast your invitation to all verified resident flat owners</p>
+            <h3 className="font-outfit font-extrabold text-2xl text-slate-900">{eventToEdit ? 'Edit Event Details' : 'Share Community Event Details'}</h3>
+            <p className="text-xs text-slate-500">{eventToEdit ? 'Update event information and details' : 'Broadcast your invitation to all verified resident flat owners'}</p>
           </div>
         </div>
 
@@ -424,7 +454,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                 disabled={isSubmitting}
                 className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-outfit font-extrabold text-sm shadow-lg shadow-amber-500/20 hover:scale-102 transition cursor-pointer flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Broadcast Event to Live Feed 🚀</span>}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>{eventToEdit ? 'Save Changes' : 'Broadcast Event to Live Feed 🚀'}</span>}
               </button>
             </div>
 

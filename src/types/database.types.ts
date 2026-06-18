@@ -25,6 +25,18 @@ export interface Database {
           role: 'Admin' | 'Committee Member' | 'Member' | 'Visitor'
           created_at: string
           updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
         }
         Insert: {
           id: string
@@ -41,6 +53,18 @@ export interface Database {
           role?: 'Admin' | 'Committee Member' | 'Member' | 'Visitor'
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
         Update: {
           id?: string
@@ -57,6 +81,18 @@ export interface Database {
           role?: 'Admin' | 'Committee Member' | 'Member' | 'Visitor'
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
       }
       events: {
@@ -73,6 +109,18 @@ export interface Database {
           ai_prompt: string | null
           created_at: string
           updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
         }
         Insert: {
           id?: string
@@ -87,6 +135,18 @@ export interface Database {
           ai_prompt?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
         Update: {
           id?: string
@@ -101,6 +161,18 @@ export interface Database {
           ai_prompt?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
       }
       event_attendees: {
@@ -256,6 +328,18 @@ export interface Database {
           user_id: string | null
           created_at: string
           updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
         }
         Insert: {
           id?: string
@@ -267,6 +351,18 @@ export interface Database {
           user_id?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
         Update: {
           id?: string
@@ -278,6 +374,18 @@ export interface Database {
           user_id?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
       }
       financial_transactions: {
@@ -292,6 +400,18 @@ export interface Database {
           created_by: string | null
           created_at: string
           updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
         }
         Insert: {
           id?: string
@@ -304,6 +424,18 @@ export interface Database {
           created_by?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
         Update: {
           id?: string
@@ -316,11 +448,395 @@ export interface Database {
           created_by?: string | null
           created_at?: string
           updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
         }
       }
+
+      flats: {
+        Row: {
+          id: string
+          flat_number: string
+          tower: string
+          owner_profile_id: string | null
+          monthly_maintenance_fee: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
+        }
+        Insert: {
+          id?: string
+          flat_number: string
+          tower: string
+          owner_profile_id?: string | null
+          monthly_maintenance_fee?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+        Update: {
+          id?: string
+          flat_number?: string
+          tower?: string
+          owner_profile_id?: string | null
+          monthly_maintenance_fee?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+      }
+      monthly_maintenance: {
+        Row: {
+          id: string
+          month: number
+          year: number
+          opening_balance: number
+          expected_collection: number
+          collected_amount: number
+          pending_amount: number
+          total_expenditure: number
+          closing_balance: number
+          remarks: string | null
+          created_at: string
+          updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
+        }
+        Insert: {
+          id?: string
+          month: number
+          year: number
+          opening_balance?: number
+          expected_collection?: number
+          collected_amount?: number
+          pending_amount?: number
+          total_expenditure?: number
+          closing_balance?: number
+          remarks?: string | null
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+        Update: {
+          id?: string
+          month?: number
+          year?: number
+          opening_balance?: number
+          expected_collection?: number
+          collected_amount?: number
+          pending_amount?: number
+          total_expenditure?: number
+          closing_balance?: number
+          remarks?: string | null
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+      }
+      maintenance_payments: {
+        Row: {
+          id: string
+          maintenance_id: string
+          flat_id: string
+          amount: number
+          payment_date: string
+          status: 'Paid' | 'Partially Paid' | 'Pending' | 'Advance Paid'
+          payment_mode: string | null
+          receipt_url: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+          receipt_number: string | null
+          billing_month: number | null
+          billing_year: number | null
+          transaction_reference: string | null
+          collected_by: string | null
+          remarks: string | null
+          generated_receipt_url: string | null
+        }
+        Insert: {
+          id?: string
+          maintenance_id: string
+          flat_id: string
+          amount?: number
+          payment_date?: string
+          status?: 'Paid' | 'Partially Paid' | 'Pending' | 'Advance Paid'
+          payment_mode?: string | null
+          receipt_url?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          receipt_number?: string | null
+          billing_month?: number | null
+          billing_year?: number | null
+          transaction_reference?: string | null
+          collected_by?: string | null
+          remarks?: string | null
+          generated_receipt_url?: string | null
+        }
+        Update: {
+          id?: string
+          maintenance_id?: string
+          flat_id?: string
+          amount?: number
+          payment_date?: string
+          status?: 'Paid' | 'Partially Paid' | 'Pending' | 'Advance Paid'
+          payment_mode?: string | null
+          receipt_url?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+          receipt_number?: string | null
+          billing_month?: number | null
+          billing_year?: number | null
+          transaction_reference?: string | null
+          collected_by?: string | null
+          remarks?: string | null
+          generated_receipt_url?: string | null
+        }
+      }
+      expenditures: {
+        Row: {
+          id: string
+          maintenance_id: string
+          expense_date: string
+          category: string
+          description: string | null
+          amount: number
+          vendor_name: string | null
+          payment_mode: string | null
+          receipt_url: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+
+          date_of_birth: string | null
+          marriage_anniversary: string | null
+          gender: string | null
+          email: string | null
+          bio: string | null
+          occupation: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          linkedin_url: string | null
+          profile_visibility: boolean
+
+        }
+        Insert: {
+          id?: string
+          maintenance_id: string
+          expense_date?: string
+          category: string
+          description?: string | null
+          amount?: number
+          vendor_name?: string | null
+          payment_mode?: string | null
+          receipt_url?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+        Update: {
+          id?: string
+          maintenance_id?: string
+          expense_date?: string
+          category?: string
+          description?: string | null
+          amount?: number
+          vendor_name?: string | null
+          payment_mode?: string | null
+          receipt_url?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+
+          date_of_birth?: string | null
+          marriage_anniversary?: string | null
+          gender?: string | null
+          email?: string | null
+          bio?: string | null
+          occupation?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          linkedin_url?: string | null
+          profile_visibility?: boolean
+
+        }
+      }
+      receipts: {
+        Row: {
+          id: string
+          payment_id: string
+          receipt_number: string
+          receipt_pdf_url: string | null
+          generated_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          payment_id: string
+          receipt_number: string
+          receipt_pdf_url?: string | null
+          generated_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          payment_id?: string
+          receipt_number?: string
+          receipt_pdf_url?: string | null
+          generated_at?: string
+          created_at?: string
+        }
+      }
+
+
+      personal_events: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string | null
+          event_type: string | null
+          event_date: string
+          reminder_days_before: number
+          is_recurring: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description?: string | null
+          event_type?: string | null
+          event_date: string
+          reminder_days_before?: number
+          is_recurring?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string | null
+          event_type?: string | null
+          event_date?: string
+          reminder_days_before?: number
+          is_recurring?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+
     }
     Views: {
-      [_ in never]: never
+
+      vw_flat_dues_summary: {
+        Row: {
+          flat_id: string
+          flat_number: string
+          tower: string
+          current_month_charge: number
+          total_months_initialized: number
+          total_billed_amount: number
+          total_paid_amount: number
+          pending_dues: number
+          advance_paid: number
+        }
+      }
+
     }
     Functions: {
       [_ in never]: never

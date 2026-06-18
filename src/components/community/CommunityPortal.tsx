@@ -8,19 +8,29 @@ import { Accounts } from './Accounts';
 import { Communication } from './Communication';
 import { ContactUs } from './ContactUs';
 import { Pictures } from './Pictures';
-import { Users, Calendar, Sparkles, Shield, Award, Building2, DollarSign, MessageSquare, Phone, Image as ImageIcon } from 'lucide-react';
+import { Dashboard } from './Dashboard';
+import { ProfilePage } from './ProfilePage';
+import { ResidentPaymentHistory } from './ResidentPaymentHistory';
+import { Users, Calendar, Sparkles, Shield, Award, Building2, DollarSign, MessageSquare, Phone, Image as ImageIcon, LayoutDashboard, UserCircle } from 'lucide-react';
+import { useAuth } from '../common/AuthContext';
 
 export const CommunityPortal: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('about');
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
 
   const tabs = [
-    { id: 'about', label: '1. About AFTOWA', icon: Building2, color: 'text-indigo-600' },
-    { id: 'accounts', label: '2. Accounts', icon: DollarSign, color: 'text-emerald-600' },
-    { id: 'events', label: '3. Events', icon: Calendar, color: 'text-amber-600' },
-    { id: 'directory', label: '4. Members List', icon: Users, color: 'text-rose-600' },
-    { id: 'communication', label: '5. Communication', icon: MessageSquare, color: 'text-purple-600' },
-    { id: 'contact', label: '6. Complaints & Contact', icon: Phone, color: 'text-blue-600' },
-    { id: 'pictures', label: '7. Pictures', icon: ImageIcon, color: 'text-orange-600' },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-indigo-600' },
+    { id: 'about', label: 'About AFTOWA', icon: Building2, color: 'text-indigo-600' },
+    { id: 'accounts', label: 'Accounts', icon: DollarSign, color: 'text-emerald-600' },
+    { id: 'events', label: 'Events', icon: Calendar, color: 'text-amber-600' },
+    { id: 'directory', label: 'Members List', icon: Users, color: 'text-rose-600' },
+    { id: 'communication', label: 'Communication', icon: MessageSquare, color: 'text-purple-600' },
+    { id: 'contact', label: 'Complaints', icon: Phone, color: 'text-blue-600' },
+    { id: 'pictures', label: 'Pictures', icon: ImageIcon, color: 'text-orange-600' },
+    ...(user ? [
+      { id: 'payment-history', label: 'My Payments', icon: DollarSign, color: 'text-emerald-600' },
+      { id: 'profile', label: 'My Profile', icon: UserCircle, color: 'text-slate-700' }
+    ] : [])
   ];
 
   return (
@@ -59,9 +69,9 @@ export const CommunityPortal: React.FC = () => {
           </div>
         </div>
 
-        {/* Community Master Navigation Switcher - 7 Screens from the Image */}
-        <div className="bg-white p-3 rounded-3xl shadow-md border border-slate-200 mb-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+        {/* Community Master Navigation Switcher */}
+        <div className="bg-white/80 backdrop-blur-xl p-3 rounded-[2.5rem] shadow-sm border border-slate-200/60 mb-12 max-w-7xl mx-auto overflow-hidden">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {tabs.map((tab: any) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -69,14 +79,14 @@ export const CommunityPortal: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-2xl font-outfit font-bold text-xs transition-all duration-300 cursor-pointer ${
+                  className={`flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-outfit font-bold text-base transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'bg-gradient-to-br from-slate-900 to-indigo-950 text-white shadow-lg scale-105'
-                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      ? 'bg-slate-900 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-amber-400' : tab.color}`} />
-                  <span className="text-center leading-tight">{tab.label}</span>
+                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-amber-400' : tab.color}`} />
+                  <span className="whitespace-nowrap truncate">{tab.label}</span>
                 </button>
               );
             })}
@@ -85,17 +95,16 @@ export const CommunityPortal: React.FC = () => {
 
         {/* Tab Content Display */}
         <div className="transition-all duration-300">
+          {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} />}
           {activeTab === 'about' && <AboutAftowa />}
           {activeTab === 'accounts' && <Accounts />}
-          {activeTab === 'events' && (
-            <EventSharing />
-          )}
-          {activeTab === 'directory' && (
-            <OwnersDirectory />
-          )}
+          {activeTab === 'events' && <EventSharing />}
+          {activeTab === 'directory' && <OwnersDirectory />}
           {activeTab === 'communication' && <Communication />}
           {activeTab === 'contact' && <ContactUs />}
           {activeTab === 'pictures' && <Pictures />}
+          {activeTab === 'profile' && user && <ProfilePage />}
+          {activeTab === 'payment-history' && <ResidentPaymentHistory />}
         </div>
 
       </div>

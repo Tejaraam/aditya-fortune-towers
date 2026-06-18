@@ -13,6 +13,39 @@ export const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
 
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.innerHeight / 3; // Trigger when section is in top 1/3rd of screen
+      const scrollPosition = window.scrollY + offset;
+
+      // Bottom-to-top order for determining the current section
+      const sections = [
+        { id: 'community', element: document.getElementById('community-portal-section') },
+        { id: 'location', element: document.getElementById('location-section') },
+        { id: 'amenities', element: document.getElementById('amenities-section') },
+        { id: 'floor-plans', element: document.getElementById('floor-plans-section') },
+        { id: 'overview', element: document.getElementById('about-section') },
+      ];
+
+      for (const section of sections) {
+        if (section.element && scrollPosition >= section.element.offsetTop) {
+          setActiveSection((prev) => (prev !== section.id ? section.id : prev));
+          return;
+        }
+      }
+
+      // If we are at the very top (Hero section)
+      if (window.scrollY < 100) {
+        setActiveSection((prev) => (prev !== 'overview' ? 'overview' : prev));
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once on mount to set initial state
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleSectionSwitch = (sectionId: string) => {
     setActiveSection(sectionId);
     if (sectionId === 'community') {

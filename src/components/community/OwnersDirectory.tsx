@@ -3,6 +3,7 @@ import { Search, UserPlus, Building2, Phone, Mail, Award, Calendar, CheckCircle2
 import { supabase } from '../../lib/supabase';
 import { Database } from '../../types/database.types';
 import { useAuth } from '../common/AuthContext';
+import { ResidentProfileModal } from './ResidentProfileModal';
 
 type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
@@ -15,6 +16,7 @@ export const OwnersDirectory: React.FC = () => {
   const [selectedTower, setSelectedTower] = useState<string>('All');
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>('All');
+  const [selectedOwner, setSelectedOwner] = useState<ProfileRow | null>(null);
 
   useEffect(() => {
     fetchOwners();
@@ -194,7 +196,8 @@ export const OwnersDirectory: React.FC = () => {
           {filteredOwners.map((owner) => (
             <div
               key={owner.id}
-              className="bg-white rounded-3xl p-6 shadow-md hover:shadow-xl border border-slate-200/80 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+              onClick={() => setSelectedOwner(owner)}
+              className="bg-white rounded-3xl p-6 shadow-md hover:shadow-xl border border-slate-200/80 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden cursor-pointer"
             >
               {/* Top Accent line based on Tower */}
               <div
@@ -244,7 +247,7 @@ export const OwnersDirectory: React.FC = () => {
                 
                 {/* Admin Role Assignment Tools */}
                 {user && profile?.role === 'Admin' && (
-                  <div className="mb-4 bg-rose-50 border border-rose-100 p-2.5 rounded-xl flex items-center justify-between">
+                  <div className="mb-4 bg-rose-50 border border-rose-100 p-2.5 rounded-xl flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
                     <span className="text-[10px] font-bold text-rose-800 uppercase tracking-wider">Manage Access Role</span>
                     <select
                       value={owner.role || 'Member'}
@@ -303,21 +306,22 @@ export const OwnersDirectory: React.FC = () => {
               </div>
 
               {/* Bottom Verification status */}
-              <div className="mt-6 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="mt-6 pt-3 border-t border-slate-100 flex items-center text-[11px] text-slate-400">
                 <span className="flex items-center gap-1 font-medium text-emerald-600">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Verified Society Resident
                 </span>
-                <button
-                  onClick={() => alert(`Initiating secure chat with ${owner.name} (${owner.tower} #${owner.flat_number})...`)}
-                  className="font-bold text-slate-800 hover:text-amber-600 transition cursor-pointer"
-                >
-                  Send Direct Message →
-                </button>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {selectedOwner && (
+        <ResidentProfileModal 
+          profile={selectedOwner} 
+          onClose={() => setSelectedOwner(null)} 
+        />
       )}
     </div>
   );
