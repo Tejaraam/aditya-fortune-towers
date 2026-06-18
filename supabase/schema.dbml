@@ -1,0 +1,114 @@
+Table auth.users {
+  id uuid [primary key]
+  email text
+  created_at timestamp
+}
+
+Table public.profiles {
+  id uuid [primary key, ref: - auth.users.id]
+  name text [not null]
+  tower text [not null]
+  flat_number text [not null]
+  phone text
+  resident_type text 
+  move_in_date date
+  profession text
+  interests text[]
+  avatar_url text
+  committee_role text
+  role text [default: 'Member']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table public.events {
+  id uuid [primary key]
+  title text [not null]
+  category text [not null]
+  event_date timestamp [not null]
+  location text [not null]
+  description text [not null]
+  organizer_id uuid [ref: > public.profiles.id]
+  image_url text
+  is_ai_stitched boolean
+  ai_prompt text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table public.event_attendees {
+  event_id uuid [ref: > public.events.id]
+  user_id uuid [ref: > public.profiles.id]
+  created_at timestamp
+  Indexes {
+    (event_id, user_id) [pk]
+  }
+}
+
+Table public.event_comments {
+  id uuid [primary key]
+  event_id uuid [ref: > public.events.id]
+  owner_id uuid [ref: > public.profiles.id]
+  text text [not null]
+  created_at timestamp
+}
+
+Table public.notices {
+  id uuid [primary key]
+  title text [not null]
+  notice_date timestamp
+  priority text
+  author_id uuid [ref: > public.profiles.id]
+  department text
+  content text [not null]
+  attachment_url text
+  created_at timestamp
+}
+
+Table public.communications {
+  id uuid [primary key]
+  title text [not null]
+  doc_date timestamp
+  doc_type text
+  author_id uuid [ref: > public.profiles.id]
+  summary text [not null]
+  file_url text
+  created_at timestamp
+}
+
+Table public.pictures {
+  id uuid [primary key]
+  title text [not null]
+  pic_date timestamp
+  category text
+  uploaded_by_id uuid [ref: > public.profiles.id]
+  description text [not null]
+  image_url text [not null]
+  file_name text
+  created_at timestamp
+}
+
+Table public.complaints {
+  id uuid [primary key]
+  title text [not null]
+  category text [not null]
+  flat text [not null]
+  status text [default: 'Open']
+  description text [not null]
+  user_id uuid [ref: > public.profiles.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table public.financial_transactions {
+  id uuid [primary key]
+  type text [not null]
+  category text [not null]
+  amount numeric [not null]
+  description text [not null]
+  transaction_date date [not null]
+  receipt_url text
+  created_by uuid [ref: > public.profiles.id]
+  created_at timestamp
+  updated_at timestamp
+}
