@@ -11,11 +11,13 @@ import { Pictures } from './Pictures';
 import { Dashboard } from './Dashboard';
 import { ProfilePage } from './ProfilePage';
 import { ResidentPaymentHistory } from './ResidentPaymentHistory';
-import { Users, Calendar, Sparkles, Shield, Award, Building2, DollarSign, MessageSquare, Phone, Image as ImageIcon, LayoutDashboard, UserCircle } from 'lucide-react';
+import { PendingVerification } from './PendingVerification';
+import { ApprovalsDashboard } from './ApprovalsDashboard';
+import { Users, Calendar, Sparkles, Shield, Award, Building2, DollarSign, MessageSquare, Phone, Image as ImageIcon, LayoutDashboard, UserCircle, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../common/AuthContext';
 
 export const CommunityPortal: React.FC = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
   const tabs = [
@@ -30,8 +32,22 @@ export const CommunityPortal: React.FC = () => {
     ...(user ? [
       { id: 'payment-history', label: 'My Payments', icon: DollarSign, color: 'text-emerald-600' },
       { id: 'profile', label: 'My Profile', icon: UserCircle, color: 'text-slate-700' }
+    ] : []),
+    ...(profile?.role === 'Admin' ? [
+      { id: 'approvals', label: 'Approvals', icon: ShieldCheck, color: 'text-red-600' }
     ] : [])
   ];
+
+  // Security Check: Lock out 'Visitor' role
+  if (user && profile?.role === 'Visitor') {
+    return (
+      <section id="community-portal-section" className="py-24 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <PendingVerification />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="community-portal-section" className="py-24 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 min-h-screen">
@@ -103,8 +119,9 @@ export const CommunityPortal: React.FC = () => {
           {activeTab === 'communication' && <Communication />}
           {activeTab === 'contact' && <ContactUs />}
           {activeTab === 'pictures' && <Pictures />}
-          {activeTab === 'profile' && user && <ProfilePage />}
           {activeTab === 'payment-history' && <ResidentPaymentHistory />}
+          {activeTab === 'profile' && user && <ProfilePage />}
+          {activeTab === 'approvals' && <ApprovalsDashboard />}
         </div>
 
       </div>

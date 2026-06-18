@@ -276,53 +276,7 @@ Supabase Storage is utilized for handling binary files.
 
 ---
 
-## 11. Live Demonstration Scripts
-
-### 5-Minute Presentation Script
-
-**[0:00 - 1:00] Introduction & Landing Page**
-*Action: Scroll through the Home Page without logging in.*
-"Welcome to the AFTOWA Digital Portal. As you can see, visitors are greeted with a premium interface showcasing our amenities. However, the core management features are strictly protected."
-
-**[1:00 - 2:30] Member Experience**
-*Action: Log in as a standard Member.*
-"I'll log in as a resident. I can view the Members Directory to connect with neighbors. I can read Official Notices, and RSVP to upcoming events. Notice that I do not have permission to post notices or alter financial data."
-
-**[2:30 - 4:00] Admin & Committee Powers**
-*Action: Log out, log in as an Admin. Go to Members List.*
-"Now I'm logged in as an Admin. Look at the Members directory—I have a new 'Manage Access Role' interface. I can promote users instantly. I also have the ability to mark complaints as 'Resolved'."
-
-**[4:00 - 5:00] Accounts & Receipt Upload Demo**
-*Action: Go to Accounts. Click 'Enter New Transaction'. Input details and attach an image.*
-"Finally, the crowning feature: Financial Transparency. When I record a transaction, I can simultaneously attach the original physical bill image. It saves the receipt securely in the cloud, allowing any resident to view the actual bill to ensure absolute trust in the community ledger. Thank you."
-
----
-
-## 12. Viva Questions and Answers
-
-1. **Why did you choose Vite over Create React App?**
-   *Answer:* Vite uses native ES modules, resulting in near-instant server start times and Hot Module Replacement (HMR), vastly outperforming CRA's webpack bundling.
-2. **What is Supabase and why not use Firebase?**
-   *Answer:* Supabase is an open-source Firebase alternative powered by PostgreSQL. It offers the power of a relational database and SQL, whereas Firebase uses a NoSQL document store which is harder to query for complex relational data like ours.
-3. **How does Row Level Security (RLS) work?**
-   *Answer:* RLS is a PostgreSQL feature that acts as a gatekeeper. Before any query executes, it evaluates a policy against the current user's session variables (like their UUID). If the policy fails, the database returns no rows, preventing data leaks at the DB level.
-4. **How do you handle state management?**
-   *Answer:* We use React Context (`AuthContext`) for global state (like the logged-in user profile) and local state (`useState`) for component-specific data like form inputs.
-5. **How is the first Admin created?**
-   *Answer:* We wrote a Postgres trigger (`handle_new_user`) that checks if the `profiles` table is empty when an auth user is created. If it is, the user is assigned 'Admin'; otherwise, 'Member'.
-6. **What happens if a user's JWT token is stolen?**
-   *Answer:* Supabase JWTs are short-lived. However, if stolen while active, the attacker assumes the user's identity. We mitigate this by requiring strong passwords and ensuring RLS restricts the blast radius of any compromised account.
-7. **Why Tailwind CSS?**
-   *Answer:* It eliminates context switching between CSS files and JS files. It also ships an incredibly small CSS payload in production by purging unused classes.
-8. **How do you ensure the Accounts summary is accurate?**
-   *Answer:* The total income and expenses are dynamically calculated on the fly in React using array `.reduce()` functions on the fetched `financial_transactions` data. It is always a direct reflection of the database state.
-9. **Can a member delete their own complaint?**
-    *Answer:* Currently, our RLS policies allow members to create and view complaints, but updates and deletions are restricted to the Committee to maintain an immutable audit trail of grievances.
-*(Note: Be prepared to discuss specific SQL queries and React Hooks used in your codebase).*
-
----
-
-## 13. Future Enhancements (Version 2)
+## 11. Future Enhancements (Version 2)
 
 - **Email/WhatsApp Notifications:** Integrating Edge Functions with SendGrid/Twilio to alert members of new notices or pending maintenance dues.
 - **Payment Gateway Integration:** Adding Razorpay/Stripe so members can pay their monthly maintenance directly through the portal.
@@ -331,7 +285,7 @@ Supabase Storage is utilized for handling binary files.
 
 ---
 
-## 14. Executive Summary
+## 12. Executive Summary
 
 The AFTOWA Digital Portal is a secure, full-stack web application designed to digitize the operations of a large residential society. Built with a modern stack consisting of React, TypeScript, Tailwind CSS, and Supabase, it provides enterprise-grade Row Level Security and Real-Time capabilities. 
 
