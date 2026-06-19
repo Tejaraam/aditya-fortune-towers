@@ -15,18 +15,12 @@ interface CommitteeContact {
   avatar: string;
 }
 
-const committeeContacts: CommitteeContact[] = [
-  { name: 'Dr. Ramesh Nambiar', role: 'President, AFTOWA', flat: 'Tower A - 101', phone: '+91 98490 12345', email: 'aftowa.president@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
-  { name: 'K. V. Satyanarayana', role: 'Treasurer', flat: 'Tower B - 202', phone: '+91 99123 45678', email: 'aftowa.treasurer@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
-  { name: 'Ananya & Vikram Rao', role: 'Cultural Secretary', flat: 'Tower A - 405', phone: '+91 94401 98765', email: 'aftowa.cultural@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' },
-  { name: 'Col. Rajeshwar Singh (Retd.)', role: 'Security Head', flat: 'Tower C - 1105', phone: '+91 91771 22334', email: 'aftowa.security@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80' },
-  { name: 'Lalitha Devi & S. K. Sharma', role: 'Social & Welfare', flat: 'Tower A - 904', phone: '+91 98481 55667', email: 'aftowa.welfare@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80' },
-  { name: 'Pooja & Sriram Patnaik', role: 'Sports & Tech', flat: 'Tower C - 1401', phone: '+91 90002 77889', email: 'aftowa.sports@adityafortune.in', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80' },
-];
+// We will fetch committee members dynamically from the profiles table
 
 export const ContactUs: React.FC = () => {
   const { user, profile } = useAuth();
   const [complaints, setComplaints] = useState<ComplaintRow[]>([]);
+  const [committeeMembers, setCommitteeMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [showForm, setShowForm] = useState(false);
@@ -42,7 +36,22 @@ export const ContactUs: React.FC = () => {
 
   useEffect(() => {
     fetchComplaints();
+    fetchCommitteeMembers();
   }, [user, profile]);
+
+  const fetchCommitteeMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('role', ['Admin', 'Committee Member']);
+      
+      if (error) throw error;
+      setCommitteeMembers(data || []);
+    } catch (error) {
+      console.error('Error fetching committee members:', error);
+    }
+  };
 
   const fetchComplaints = async () => {
     if (!user || !profile) {
@@ -174,26 +183,38 @@ export const ContactUs: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {committeeContacts.map((c, idx) => (
+          {committeeMembers.length > 0 ? committeeMembers.map((c, idx) => (
             <div key={idx} className="bg-gradient-to-br from-slate-50 to-white p-5 rounded-2xl border border-slate-200 hover:border-amber-400 hover:shadow-lg transition-all">
               <div className="flex items-start gap-3 mb-3">
-                <img src={c.avatar} alt={c.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md shrink-0" />
+                <img 
+                  src={c.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random`} 
+                  alt={c.name} 
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md shrink-0" 
+                />
                 <div className="flex-1 min-w-0">
-                  <span className="inline-block text-[10px] font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1">{c.role}</span>
-                  <h4 className="font-outfit font-bold text-base text-slate-900 leading-tight">{c.name}</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5">{c.flat}</p>
+                  <span className="inline-block text-[10px] font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded mb-1">
+                    {c.committee_role || c.role || 'Committee Member'}
+                  </span>
+                  <h4 className="font-outfit font-bold text-base text-slate-900 leading-tight truncate">{c.name}</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 truncate">{c.tower} - {c.flat_number}</p>
                 </div>
               </div>
               <div className="space-y-1.5 text-xs">
-                <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-slate-700 hover:text-emerald-700 font-medium transition">
-                  <Phone className="w-3.5 h-3.5 text-emerald-600" /> {c.phone}
-                </a>
-                <a href={`mailto:${c.email}`} className="flex items-center gap-2 text-slate-700 hover:text-indigo-700 font-medium transition">
-                  <Mail className="w-3.5 h-3.5 text-indigo-600" /> <span className="truncate">{c.email}</span>
+                {c.phone && (
+                  <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-slate-700 hover:text-emerald-700 font-medium transition">
+                    <Phone className="w-3.5 h-3.5 text-emerald-600" /> {c.phone}
+                  </a>
+                )}
+                <a href={`mailto:contact@adityafortune.in`} className="flex items-center gap-2 text-slate-700 hover:text-indigo-700 font-medium transition">
+                  <Mail className="w-3.5 h-3.5 text-indigo-600" /> <span className="truncate">contact@adityafortune.in</span>
                 </a>
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="col-span-full py-8 text-center text-slate-500 bg-slate-50 rounded-2xl border border-slate-200 border-dashed">
+              No executive committee members have been registered yet.
+            </div>
+          )}
         </div>
       </div>
 

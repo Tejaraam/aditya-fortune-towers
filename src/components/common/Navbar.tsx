@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden xl:flex flex-1 justify-center px-2 2xl:px-4">
+          <div className="hidden 2xl:flex flex-1 justify-center px-2 2xl:px-4">
             <nav className="flex items-center gap-0.5 2xl:gap-1 bg-slate-100/80 p-1 2xl:p-1.5 rounded-full border border-slate-200 shadow-inner">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Call to Actions */}
-          <div className="hidden xl:flex items-center gap-1 bg-slate-100/80 p-1 2xl:p-1.5 rounded-full border border-slate-200 shadow-inner z-10 shrink-0">
+          <div className="hidden 2xl:flex items-center gap-1 bg-slate-100/80 p-1 2xl:p-1.5 rounded-full border border-slate-200 shadow-inner z-10 shrink-0">
             {user ? (
               <div className="flex items-center gap-2 2xl:gap-3 pr-1">
                 <span className="text-xs 2xl:text-sm font-semibold text-slate-700 pl-2 2xl:pl-3 whitespace-nowrap">
@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Mobile Menu Toggle Button */}
-          <div className="xl:hidden flex items-center gap-2">
+          <div className="2xl:hidden flex items-center gap-2">
             <button
               onClick={() => setActiveSection('community')}
               className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-xs rounded-lg shadow-sm"
@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="xl:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-slate-200 px-4 py-6 shadow-2xl animate-in slide-in-from-top duration-200">
+        <div className="2xl:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-slate-200 px-4 py-6 shadow-2xl animate-in slide-in-from-top duration-200">
           <div className="flex flex-col gap-3">
             {navItems.map((item) => {
               const Icon = item.icon;
